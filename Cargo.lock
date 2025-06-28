@@ -3019,6 +3019,7 @@ dependencies = [
  "serde",
  "tectonic_errors",
  "toml",
+ "tracing",
 ]
 
 [[package]]

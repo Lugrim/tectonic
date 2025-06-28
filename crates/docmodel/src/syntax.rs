@@ -8,8 +8,9 @@
 
 use std::path::PathBuf;
 
-use crate::document::{BuildTargetType, InputFile, OutputProfile};
+use crate::document::{BuildTargetType, InputFile, OutputProfile, DEFAULT_INPUTS};
 use serde::{Deserialize, Serialize, Serializer};
+use tracing::warn;
 
 // This file is an exercise in Rust type conversion.
 //
@@ -137,6 +138,14 @@ impl From<&TomlOutputProfile> for OutputProfile {
                 }
                 if let Some(s) = &val.postamble_file {
                     v.push(TomlInputFile::Path(s.to_string()).into())
+                }
+                if v.len() == 0 {
+                    DEFAULT_INPUTS
+                        .iter()
+                        .map(|x| InputFile::File(x.to_string()))
+                        .for_each(|x| v.push(x));
+                } else {
+                    warn!("`preamble`, `index` and `postamble` fields are deprecated and may be removed in a future update. Please prefer using `inputs` fields.");
                 }
                 v
             }
